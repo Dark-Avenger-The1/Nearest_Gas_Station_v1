@@ -1,0 +1,39 @@
+# Gitignore for Visual Studio Code web development
+# Based on general web best practices and VS Code configuration
+
+# Dependency directories
+node_modules/       # Node.js dependencies
+/vendor/            # Composer/PHP dependencies
+/build/
+/dist/
+/out/
+/temp/
+
+# Log files and databases
+*.log
+npm-debug.log*
+*.sqlite
+*.db
+
+# Environment files
+secrets.env
+.flaskenv
+.venv               # Python virtual environments
+
+# Operating System files
+.DS_Store           # macOS files
+Thumbs.db           # Windows files
+
+# Optional: Ignore the entire .vscode folder for personal settings
+# Many developers prefer to exclude this to avoid committing local launch or task configurations.
+.vscode/
+
+# UNCOMMENT the following lines IF you want to share specific workspace settings
+# within the .vscode folder with your team (e.g., recommended extensions).
+#
+# # Visual Studio Code files (uncomment to include specific files)
+# .vscode/*
+# !.vscode/settings.json
+# !.vscode/tasks.json
+# !.vscode/launch.json
+# !.vscode/extensions.json
