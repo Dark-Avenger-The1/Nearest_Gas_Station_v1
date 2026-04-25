@@ -1,5 +1,6 @@
 "use strict";
 
+// App-level settings for search radius, result limits, and third-party API endpoints.
 const config = {
   searchRadiusMeters: 7000,
   stationFetchLimit: 20,
@@ -9,6 +10,7 @@ const config = {
   osrmRouteBase: "https://router.project-osrm.org/route/v1/driving/"
 };
 
+// Cached DOM references so we only query the page once.
 const dom = {
   locateBtn: document.getElementById("locate-btn"),
   resetBtn: document.getElementById("reset-btn"),
@@ -23,6 +25,7 @@ const dom = {
   lastUpdated: document.getElementById("last-updated")
 };
 
+// Shared runtime state for the map, markers, fetched stations, and best route result.
 const state = {
   map: null,
   userMarker: null,
@@ -38,6 +41,12 @@ document.addEventListener("DOMContentLoaded", () => {
   bindEvents();
 });
 
+/**
+ * Creates the Leaflet map instance, applies the starting viewport,
+ * and adds the OpenStreetMap tile layer plus the station marker layer.
+ *
+ * @returns {void}
+ */
 function initializeMap() {
   state.map = L.map("map", {
     zoomControl: true,
@@ -52,11 +61,23 @@ function initializeMap() {
   state.stationMarkersLayer = L.layerGroup().addTo(state.map);
 }
 
+/**
+ * Attaches UI event listeners for the primary app actions.
+ *
+ * @returns {void}
+ */
 function bindEvents() {
   dom.locateBtn.addEventListener("click", handleLocateClick);
   dom.resetBtn.addEventListener("click", resetExperience);
 }
 
+/**
+ * Runs the full "find nearest gas station by shortest route" flow.
+ * It gets the user's location, fetches nearby fuel stations, compares
+ * their road-network distances, and renders the best result on the map.
+ *
+ * @returns {Promise<void>}
+ */
 async function handleLocateClick() {
   if (!navigator.geolocation) {
     setStatus("Geolocation is not supported in this browser.", "error");
@@ -122,6 +143,11 @@ async function handleLocateClick() {
   }
 }
 
+/**
+ * Resets the UI, map layers, and cached search results back to the default state.
+ *
+ * @returns {void}
+ */
 function resetExperience() {
   clearMapLayers();
   state.userPosition = null;
@@ -139,6 +165,11 @@ function resetExperience() {
   setStatus("Map reset. Share your location to search again.", "idle");
 }
 
+/**
+ * Removes all currently rendered route and marker layers from the map.
+ *
+ * @returns {void}
+ */
 function clearMapLayers() {
   if (state.userMarker) {
     state.map.removeLayer(state.userMarker);
@@ -153,6 +184,11 @@ function clearMapLayers() {
   state.stationMarkersLayer.clearLayers();
 }
 
+/**
+ * Creates or refreshes the marker that represents the user's current position.
+ *
+ * @returns {void}
+ */
 function renderUserMarker() {
   if (!state.userPosition) {
     return;
@@ -171,6 +207,12 @@ function renderUserMarker() {
   state.map.setView([state.userPosition.lat, state.userPosition.lng], 14);
 }
 
+/**
+ * Renders the ranked gas station candidates on the map and in the sidebar list.
+ * The first station in `state.stations` is treated as the shortest-route winner.
+ *
+ * @returns {void}
+ */
 function renderStations() {
   state.stationMarkersLayer.clearLayers();
 
@@ -209,6 +251,14 @@ function renderStations() {
     .join("");
 }
 
+/**
+ * Draws the final route polyline for the winning gas station and updates
+ * the route summary panel with distance, duration, and step information.
+ *
+ * @param {object} route - The OSRM route object containing geometry and leg data.
+ * @param {object} bestStation - The selected gas station with routing metadata.
+ * @returns {void}
+ */
 function renderRoute(route, bestStation) {
   if (state.routeLayer) {
     state.map.removeLayer(state.routeLayer);
@@ -246,6 +296,11 @@ function renderRoute(route, bestStation) {
   `;
 }
 
+/**
+ * Updates the summary cards using the currently selected best station.
+ *
+ * @returns {void}
+ */
 function renderSummary() {
   if (!state.bestStation) {
     return;
@@ -261,6 +316,13 @@ function renderSummary() {
   });
 }
 
+/**
+ * Updates the status text and badge tone shown in the sidebar.
+ *
+ * @param {string} message - The status message shown to the user.
+ * @param {string} tone - The visual state name such as `idle`, `loading`, `success`, or `error`.
+ * @returns {void}
+ */
 function setStatus(message, tone) {
   dom.statusText.textContent = message;
   dom.statusBadge.className = `status-badge ${tone}`;
@@ -273,11 +335,22 @@ function setStatus(message, tone) {
         : "Waiting";
 }
 
+/**
+ * Toggles the loading state of the primary action button.
+ *
+ * @param {boolean} isLoading - Whether a route search is currently running.
+ * @returns {void}
+ */
 function setLoading(isLoading) {
   dom.locateBtn.disabled = isLoading;
   dom.locateBtn.textContent = isLoading ? "Finding route..." : "Use my location";
 }
 
+/**
+ * Wraps the browser geolocation API in a Promise so it can be used with `await`.
+ *
+ * @returns {Promise<GeolocationPosition>}
+ */
 function getCurrentPosition() {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, handleLocationError.bind(null, reject), {
@@ -288,6 +361,13 @@ function getCurrentPosition() {
   });
 }
 
+/**
+ * Maps browser geolocation errors into a readable application error.
+ *
+ * @param {(reason?: Error) => void} reject - The Promise reject callback from `getCurrentPosition`.
+ * @param {GeolocationPositionError} error - The browser geolocation error object.
+ * @returns {void}
+ */
 function handleLocationError(reject, error) {
   const messageMap = {
     1: "Location access was denied. Please allow location permission and try again.",
@@ -298,6 +378,13 @@ function handleLocationError(reject, error) {
   reject(new Error(messageMap[error.code] || "Unable to get your current location."));
 }
 
+/**
+ * Fetches nearby map features tagged as fuel stations from the Overpass API.
+ *
+ * @param {number} lat - The user's latitude.
+ * @param {number} lng - The user's longitude.
+ * @returns {Promise<Array<object>>} A list of normalized nearby station objects.
+ */
 async function fetchNearbyStations(lat, lng) {
   const query = `
     [out:json][timeout:25];
@@ -327,6 +414,15 @@ async function fetchNearbyStations(lat, lng) {
   );
 }
 
+/**
+ * Converts a raw Overpass element into the station structure used by the app.
+ * It also computes a straight-line distance for initial candidate ranking.
+ *
+ * @param {object} element - A raw Overpass API result entry.
+ * @param {number} userLat - The user's latitude.
+ * @param {number} userLng - The user's longitude.
+ * @returns {object | null} A normalized station object or `null` if coordinates are missing.
+ */
 function normalizeStation(element, userLat, userLng) {
   const lat = element.lat ?? element.center?.lat;
   const lng = element.lon ?? element.center?.lon;
@@ -355,6 +451,13 @@ function normalizeStation(element, userLat, userLng) {
   };
 }
 
+/**
+ * Removes likely duplicate stations using rounded coordinates and keeps
+ * only the closest entries up to the configured station limit.
+ *
+ * @param {Array<object>} stations - The normalized station candidates.
+ * @returns {Array<object>} A deduplicated and truncated station list.
+ */
 function dedupeStations(stations) {
   const seen = new Set();
 
@@ -373,6 +476,14 @@ function dedupeStations(stations) {
     .slice(0, config.stationFetchLimit);
 }
 
+/**
+ * Compares shortlisted stations by real road-network distance and duration
+ * using OSRM's table service, then sorts them by shortest driving distance.
+ *
+ * @param {Array<object>} stations - Candidate station objects to compare.
+ * @param {{lat: number, lng: number}} userPosition - The user's current coordinates.
+ * @returns {Promise<Array<object>>} Ranked station objects with route metadata attached.
+ */
 async function rankStationsByDrivingDistance(stations, userPosition) {
   const shortlisted = stations.slice(0, config.routeCompareLimit);
   const coordinateList = [
@@ -402,6 +513,13 @@ async function rankStationsByDrivingDistance(stations, userPosition) {
     .sort((a, b) => a.routeDistance - b.routeDistance);
 }
 
+/**
+ * Fetches the full route geometry for the winning station so the path can be drawn on the map.
+ *
+ * @param {{lat: number, lng: number}} userPosition - The user's current coordinates.
+ * @param {{lat: number, lng: number}} station - The selected station coordinates.
+ * @returns {Promise<object>} The OSRM route object for the winning path.
+ */
 async function fetchRouteGeometry(userPosition, station) {
   const coordinates = `${userPosition.lng},${userPosition.lat};${station.lng},${station.lat}`;
   const response = await fetch(
@@ -422,6 +540,12 @@ async function fetchRouteGeometry(userPosition, station) {
   return route;
 }
 
+/**
+ * Builds a small custom Leaflet `divIcon` marker using a CSS class name.
+ *
+ * @param {string} className - The CSS class applied to the marker element.
+ * @returns {L.DivIcon} A Leaflet div-based icon instance.
+ */
 function buildPin(className) {
   return L.divIcon({
     html: `<span class="${className}"></span>`,
@@ -432,6 +556,15 @@ function buildPin(className) {
   });
 }
 
+/**
+ * Estimates the straight-line distance between two coordinates using the Haversine formula.
+ *
+ * @param {number} lat1 - Start latitude.
+ * @param {number} lng1 - Start longitude.
+ * @param {number} lat2 - End latitude.
+ * @param {number} lng2 - End longitude.
+ * @returns {number} Distance in meters.
+ */
 function getDistanceInMeters(lat1, lng1, lat2, lng2) {
   const earthRadius = 6371000;
   const latDelta = toRadians(lat2 - lat1);
@@ -443,10 +576,22 @@ function getDistanceInMeters(lat1, lng1, lat2, lng2) {
   return 2 * earthRadius * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
+/**
+ * Converts an angle from degrees to radians.
+ *
+ * @param {number} value - The angle in degrees.
+ * @returns {number} The angle in radians.
+ */
 function toRadians(value) {
   return (value * Math.PI) / 180;
 }
 
+/**
+ * Formats a raw meter distance into a human-readable distance label.
+ *
+ * @param {number} meters - The distance in meters.
+ * @returns {string} A formatted distance string.
+ */
 function formatDistance(meters) {
   if (!Number.isFinite(meters)) {
     return "--";
@@ -457,6 +602,12 @@ function formatDistance(meters) {
     : `${Math.round(meters)} m`;
 }
 
+/**
+ * Formats a raw duration in seconds into a compact readable time label.
+ *
+ * @param {number} seconds - The duration in seconds.
+ * @returns {string} A formatted duration string.
+ */
 function formatDuration(seconds) {
   if (!Number.isFinite(seconds)) {
     return "--";
@@ -476,6 +627,12 @@ function formatDuration(seconds) {
     : `${hours} hr`;
 }
 
+/**
+ * Escapes special HTML characters before inserting dynamic text into markup strings.
+ *
+ * @param {string} value - The raw text value to sanitize.
+ * @returns {string} The escaped HTML-safe string.
+ */
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
