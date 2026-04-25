@@ -1,0 +1,128 @@
+$bg: #f4f4f4;
+$dark: #222;
+$white: #fff;
+$shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: $bg;
+  height: 100vh;
+  overflow: hidden; /* prevents unwanted scroll */
+}
+
+/* HEADER */
+.header {
+  height: 50px;
+  background: $dark;
+  color: $white;
+
+  justify-content: space-between;
+  display: flex;
+  align-items:center;
+  gap: 20px;
+
+  padding: 0 20px;
+
+  .logo {
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .search-bar {
+    flex: 1;
+    max-width: 500px;
+
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+  }
+
+  .locate_user {
+    color: $white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: rgb(236, 66, 47);
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+
+    &:hover {
+      background: rgb(164, 254, 54);
+      color: $dark;
+    }
+  }
+}
+
+.layout {
+  height: calc(100vh - 70px);
+  position: relative;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.main {
+  background: transparent;
+  min-height: 85vh;
+  padding: 20px;
+
+  h1 {
+    margin-top: 0;
+  }
+}
+
+.panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  width: 250px;
+  height: 550px;
+  background: $white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: $shadow;
+
+  .list-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .gas-station {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #fafafa;
+    transition: border-color 0.3s ease;
+
+    &:hover {
+      border-color: #007bff;
+    }
+
+    .station-name {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+      font-weight: bold;
+      color: $dark;
+    }
+
+    .station-address {
+      margin: 0 0 5px 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .station-distance {
+      margin: 0;
+      font-size: 14px;
+      color: #007bff;
+      font-weight: bold;
+    }
+  }
+}

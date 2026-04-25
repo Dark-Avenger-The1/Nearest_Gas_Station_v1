@@ -1,0 +1,111 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  height: 100vh;
+  overflow: hidden; /* prevents unwanted scroll */
+}
+
+/* HEADER */
+.header {
+  height: 50px;
+  background: #222;
+  color: #fff;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 20px;
+}
+.header .logo {
+  font-size: 20px;
+  font-weight: bold;
+}
+.header .search-bar {
+  flex: 1;
+  max-width: 500px;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+}
+.header .locate_user {
+  color: #fff;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background: rgb(236, 66, 47);
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+.header .locate_user:hover {
+  background: rgb(164, 254, 54);
+  color: #222;
+}
+
+.layout {
+  height: calc(100vh - 70px);
+  position: relative;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.main {
+  background: transparent;
+  min-height: 85vh;
+  padding: 20px;
+}
+.main h1 {
+  margin-top: 0;
+}
+
+.panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 250px;
+  height: 550px;
+  background: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.panel .list-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.panel .gas-station {
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #fafafa;
+  transition: border-color 0.3s ease;
+}
+.panel .gas-station:hover {
+  border-color: #007bff;
+}
+.panel .gas-station .station-name {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #222;
+}
+.panel .gas-station .station-address {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  color: #666;
+}
+.panel .gas-station .station-distance {
+  margin: 0;
+  font-size: 14px;
+  color: #007bff;
+  font-weight: bold;
+}
+
+/*# sourceMappingURL=main.css.map */
