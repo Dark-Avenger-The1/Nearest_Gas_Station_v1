@@ -79,4 +79,33 @@ body {
   text-align: center;
 }
 
+.panel .gas-station {
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #fafafa;
+  transition: border-color 0.3s ease;
+}
+.panel .gas-station:hover {
+  border-color: #007bff;
+}
+.panel .gas-station .station-name {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #222;
+}
+.panel .gas-station .station-address {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  color: #666;
+}
+.panel .gas-station .station-distance {
+  margin: 0;
+  font-size: 14px;
+  color: #007bff;
+  font-weight: bold;
+}
+
 /*# sourceMappingURL=main.css.map */
