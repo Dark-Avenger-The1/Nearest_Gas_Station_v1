@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FuelFinder Route Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="hero-card">
+        <p class="eyebrow">Smart Fuel Routing</p>
+        <h1>Find the nearest gas station by actual driving route.</h1>
+        <p class="hero-copy">
+          This map uses your current location, searches nearby fuel stations, and compares route distances so the best station is picked by road travel, not straight-line guessing.
+        </p>
+
+        <div class="hero-actions">
+          <button id="locate-btn" class="primary-button" type="button">Use my location</button>
+          <button id="reset-btn" class="ghost-button" type="button">Reset map</button>
+        </div>
+
+        <div class="api-strip">
+          <span>Leaflet map</span>
+          <span>Overpass station search</span>
+          <span>OSRM routing</span>
+        </div>
+      </div>
+
+      <section class="panel status-panel">
+        <div class="panel-heading">
+          <h2>Trip status</h2>
+          <span id="status-badge" class="status-badge idle">Waiting</span>
+        </div>
+        <p id="status-text" class="status-text">
+          Start by sharing your location. If geolocation is blocked, open the app from localhost instead of directly as a file.
+        </p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>Best route</h2>
+          <span id="last-updated" class="muted-label">No search yet</span>
+        </div>
+
+        <div class="metrics-grid">
+          <article class="metric-card">
+            <span class="metric-label">Station</span>
+            <strong id="best-station-name">Waiting for search</strong>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Drive distance</span>
+            <strong id="best-distance">--</strong>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Est. time</span>
+            <strong id="best-duration">--</strong>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Stations checked</span>
+            <strong id="stations-count">0</strong>
+          </article>
+        </div>
+
+        <div id="route-details" class="route-details empty">
+          Route details will appear here after the first successful search.
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>Nearby fuel stations</h2>
+          <span class="muted-label">Sorted by road route</span>
+        </div>
+        <div id="station-list" class="station-list">
+          <div class="empty-state">
+            Nearby stations will be listed here once the app has your location.
+          </div>
+        </div>
+      </section>
+    </aside>
+
+    <main class="map-column">
+      <div class="map-header">
+        <div>
+          <p class="eyebrow">Live map</p>
+          <h2>Current location, nearest station, and shortest path</h2>
+        </div>
+        <div class="legend">
+          <span><i class="legend-dot user"></i>You</span>
+          <span><i class="legend-dot station"></i>Gas station</span>
+          <span><i class="legend-dot route"></i>Shortest route</span>
+        </div>
+      </div>
+
+      <div id="map" class="map-frame" aria-label="Interactive fuel routing map"></div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
