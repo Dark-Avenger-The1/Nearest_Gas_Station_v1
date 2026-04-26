@@ -7,13 +7,13 @@ const cors = require("cors");
 app.use(express.json());
 app.use(cors());
 const testRoute = require("../Routes/TestRoute");
+const gasStation = require("../Routes/GasStation");
 
 app.use("/fun",testRoute);
+app.use("/api",gasStation);
 
-const server = http.createServer(function(req,res){
-    res.write("test");
-    res.end();
-});
+
+
 const port = 3000;
 
 
