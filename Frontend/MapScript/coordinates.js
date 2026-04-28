@@ -2,7 +2,7 @@ let long =null;
 let lati =null;
 
 
-
+// mao ni ang function nga mo request sa geolocation API sa browser para makuha ang current location sa user, unya mo store sa latitude ug longitude sa global variables nga long ug lati
 export async function getCoordinates(){
     if (navigator.geolocation) {
         console.log("loading....");
@@ -25,6 +25,7 @@ export async function getCoordinates(){
     }
 }
 
+// mao ni ang function nga mo extract sa latitude ug longitude gikan sa getCoordinates function, unya mo return og object nga naay latitude ug longitude properties
 export function extractCoordinates(){
     if(lati===null || long ===null){
         return null;
