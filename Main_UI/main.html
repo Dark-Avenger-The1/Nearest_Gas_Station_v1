@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GasFinder</title>
     <link rel="stylesheet" href="main.css">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="map.css">
+
 </head>
 <body>
     <header class="header">
@@ -17,7 +22,7 @@
 
     <div class = "layout">
         <main class="main">
-            <h1>Map</h1>
+            <div id="map"></div>
         </main>
 
         <aside class="panel">
@@ -46,3 +51,8 @@
             
         </aside>
     </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module" src="app.js"></script>
+</body>

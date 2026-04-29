@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  },
+  "name": "nearest_gas_station",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dark-Avenger-The1/Nearest_Gas_Station_v1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dark-Avenger-The1/Nearest_Gas_Station_v1/issues"
+  },
+  "homepage": "https://github.com/Dark-Avenger-The1/Nearest_Gas_Station_v1#readme",
+  "description": ""
+}
