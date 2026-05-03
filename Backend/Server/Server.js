@@ -6,12 +6,17 @@ const cors = require("cors");
 
 app.use(express.json());
 app.use(cors());
-const testRoute = require("../Routes/TestRoute");
-const gasStation = require("../Routes/GasStation");
+try{
+    const testRoute = require("../Routes/TestRoute");
+    const gasStation = require("../Routes/GasStation");
+    const gasFilter = require("../Routes/GasFilter");
 
-app.use("/fun",testRoute);
-app.use("/api",gasStation);
-
+    app.use("/fun",testRoute);
+    app.use("/api",gasStation);
+    app.use("/api",gasFilter);
+}catch(err){
+    console.log("Start up err",err.message);
+}
 
 
 const port = 3000;
