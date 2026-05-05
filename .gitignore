@@ -16,6 +16,9 @@ npm-debug.log*
 *.db
 
 # Environment files
+.env
+.env.*
+!.env.example
 secrets.env
 .flaskenv
 .venv               # Python virtual environments
