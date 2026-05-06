@@ -12,12 +12,7 @@ router.post("/FilterGas",(req,res)=>{
         let responseArray = [];
         let length = (reqArr.length>3)?3:reqArr.length;
         let finalArr = new Array(length);
-        /*
-        for(let i =0;i<reqArr.length;i++){
-            let gasLoc = {lat:reqArr.lat,lng:reqArr.lon};
-
-        }
-        */
+        
         reqArr.forEach((val)=>{
             let gasLoc = {lat:val.lat,lng:val.lon};
             distanceArr.push({
@@ -60,6 +55,7 @@ router.post("/FilterGas",(req,res)=>{
     }catch(err){
         console.log(err.message);
     }
+
 
 });
 

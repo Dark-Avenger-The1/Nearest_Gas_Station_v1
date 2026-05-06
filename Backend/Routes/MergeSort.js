@@ -44,7 +44,7 @@ function merge(leftArr,rightArr,arr,column){
     }
 
     while(i<leftSize){
-        arr[k]=leftArr[i][column];
+        arr[k]=leftArr[i];
         i++;
         k++;
     }
