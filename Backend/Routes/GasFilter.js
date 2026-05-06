@@ -14,7 +14,7 @@ router.post("/FilterGas",(req,res)=>{
         let finalArr = new Array(length);
         
         reqArr.forEach((val)=>{
-            let gasLoc = {lat:val.lat,lng:val.lon};
+            let gasLoc = (val.type==="node")?{lat:val.lat,lng:val.lon}:{lat:val.center.lat,lng:val.center.lon};
             distanceArr.push({
                 id:val.id,
                 distance:haversine(gasLoc,req.body.userLoc)
@@ -22,8 +22,6 @@ router.post("/FilterGas",(req,res)=>{
         });
 
         
-        console.log(distanceArr);
-        console.log(reqArr);
         mergeSort(reqArr,"id");
         mergeSort(distanceArr,"distance");
         
@@ -33,9 +31,8 @@ router.post("/FilterGas",(req,res)=>{
         console.log(reqArr);
         distanceArr.forEach((val)=>{
             responseArray.push(binarySearch(val.id,reqArr,"id"));
+            console.log(binarySearch(val.id,reqArr,"id").tags.name+" Distance: "+val.distance)
         });
-        console.log("Response Array");
-        console.log(responseArray);
 
         for(let i=0;i<length;i++){
             console.log("Extracted "+responseArray[i]);
