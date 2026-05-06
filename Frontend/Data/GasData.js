@@ -4,10 +4,7 @@ export async function mapGasData(data,userData){
     const resArr = new Array(data.length);
     data.forEach((val,index)=>{
         const start = userData;
-        const end = {
-            lat: val.lat,
-            lng: val.lon
-        };
+        const end = (val.type==="node")?{lat: val.lat,lng: val.lon}:{lat:val.center.lat,lng:val.center.lon};
 
         const response = getRoute(start, end);
         resArr[index]={

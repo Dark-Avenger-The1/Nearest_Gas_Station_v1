@@ -2,10 +2,12 @@ const http = require("http");
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const { loadEnv } = require("../../Helper/loadEnv");
+//const { loadEnv } = require("../../Helper/loadEnv");
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../../secrets.env')});
+//loadEnv();
 
-loadEnv();
-
+console.log(process.env.ORS_API_KEY);
 app.use(express.json());
 app.use(cors());
 try{
