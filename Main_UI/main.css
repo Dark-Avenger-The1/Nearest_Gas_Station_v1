@@ -111,4 +111,25 @@ body {
   font-size: 14px;
   color: #007bff;
   font-weight: bold;
-}/*# sourceMappingURL=main.css.map */
+}
+.panel .selected-station {
+  margin-top: 16px;
+  min-height: 110px;
+  max-height: 460px;
+  overflow-y: auto;
+}
+.panel .selected-station .station-meta {
+  margin: 8px 0 0 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.panel .station-item {
+  cursor: pointer;
+}
+
+.panel .station-item.is-selected {
+  border-color: #007bff;
+}
+
+/*# sourceMappingURL=main.css.map */
