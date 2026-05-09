@@ -125,6 +125,8 @@ body {
   border-radius: 12px;
   padding: 20px;
   box-shadow: $shadow;
+  display: flex;
+  flex-direction: column;
 
   .list-title {
     font-size: 18px;
@@ -163,6 +165,25 @@ body {
       font-size: 14px;
       color: $blue;
       font-weight: bold;
+    }
+  }
+
+  .Nearest-gas-button {
+    align-self: center;
+    margin-top: auto;
+    margin-bottom: 10px;
+    color: rgb(0, 0, 0);
+    border: 2px solid $blue;
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 10px;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+
+    &:hover {
+      background-color: $blue;
+      border-color: black;
+      color: $white;
+      cursor: pointer;
     }
   }
 }
