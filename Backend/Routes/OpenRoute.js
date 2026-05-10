@@ -1,10 +1,12 @@
 const express = require("express");
-
 const router = express.Router();
+
 
 router.post("/route", async (req, res) => {
     const { start, end, profile = "driving-car" } = req.body;
-
+    console.log("ORS API Hit!");
+    console.log(req.body);
+    console.log(process.env.ORS_API_KEY);
     if (!process.env.ORS_API_KEY) {
         return res.status(500).json({
             status: "failed",
@@ -23,13 +25,13 @@ router.post("/route", async (req, res) => {
         const orsResponse = await fetch(`https://api.openrouteservice.org/v2/directions/${profile}/geojson`, {
             method: "POST",
             headers: {
-                "Authorization": process.env.ORS_API_KEY,
+                "Authorization": `Bearer ${process.env.ORS_API_KEY}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 coordinates: [
-                    [start.lng, start.lat],
-                    [end.lng, end.lat]
+                    [parseFloat(start.lng), parseFloat(start.lat)], 
+                    [parseFloat(end.lng), parseFloat(end.lat)]
                 ]
             })
         });
