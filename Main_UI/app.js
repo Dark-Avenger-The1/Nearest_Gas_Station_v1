@@ -5,6 +5,7 @@ import { gasFilter } from "../Frontend/Hooks/testGasFilter.js";
 const defaultCenter = [7.426401792405303, 125.79344414105464];
 const map = L.map("map").setView(defaultCenter, 13);
 const locateButton = document.querySelector(".locate_user");
+const travelModeButtons = document.querySelectorAll(".travel-mode");
 
 let userMarker = null;
 let stationMarkers = [];
@@ -25,19 +26,19 @@ function getStationName(station) {
     return station.tags?.name || station.tags?.brand || "Gas Station";
 }
 
-// function getStationAddress(station) {
-//     const tags = station.tags || {};
-//     const addressLine = [tags["addr:housenumber"], tags["addr:street"]]
-//         .filter(Boolean)
-//         .join(" ")
-//         .trim();
+function getStationAddress(station) {
+    const tags = station.tags || {};
+    const addressLine = [tags["addr:housenumber"], tags["addr:street"]]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
 
-//     if (addressLine) {
-//         return addressLine;
-//     }
+    if (addressLine) {
+        return addressLine;
+    }
 
-//     return tags["addr:city"] || "Address unavailable";
-// }
+    return tags["addr:city"] || "Address unavailable";
+}
 
 function renderGasStations(stations, userCoordinates) {
     clearStationMarkers();
@@ -119,3 +120,13 @@ async function handleLocateUser() {
 if (locateButton) {
     locateButton.addEventListener("click", handleLocateUser);
 }
+
+travelModeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+        travelModeButtons.forEach((modeButton) => {
+            modeButton.classList.remove("active");
+        });
+
+        button.classList.add("active");
+    });
+});

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GasFinder</title>
+    <link rel="stylesheet" href="Main_UI/main.css">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+</head>
+<body>
+    <header class="header">
+        <div class="logo">GasFinder</div>
+        <div class="header-actions" aria-label="Map controls">
+            <button class="travel-mode active" type="button" aria-label="Car mode">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 11l1.7-4.2A3 3 0 0 1 9.5 5h5a3 3 0 0 1 2.8 1.8L19 11" />
+                    <path d="M4 11h16v6H4z" />
+                    <path d="M7 17v2" />
+                    <path d="M17 17v2" />
+                    <path d="M7 14h.01" />
+                    <path d="M17 14h.01" />
+                </svg>
+            </button>
+            <button class="travel-mode" type="button" aria-label="Motorcycle mode">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 17a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                    <path d="M19 17a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                    <path d="M8 14h4l3-5h2" />
+                    <path d="M12 14l-2-5H7" />
+                    <path d="M15 9l2 5" />
+                </svg>
+            </button>
+            <button class="travel-mode" type="button" aria-label="Walking mode">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M13 4a2 2 0 1 0-4 0 2 2 0 0 0 4 0z" />
+                    <path d="M10.5 7l-2 5 3 2 1.5 6" />
+                    <path d="M13 9l3 2" />
+                    <path d="M9 20l-3 1" />
+                    <path d="M8.5 12l-3 2" />
+                </svg>
+            </button>
+            <button class="locate_user" type="button">Locate Me</button>
+        </div>
+    </header>
+
+    <div class="layout">
+        <main class="main">
+            <div id="map"></div>
+        </main>
+
+        <aside class="panel">
+            <div class="list-title">Nearest Gas Stations</div>
+            <hr>
+
+            <!-- Example lang ni-->
+            <!-- Gas Station Items -->
+            <div class="gas-station">
+                <h3 class="station-name">Shell Gas Station</h3>
+                <p class="station-address">123 Main St, Anytown, USA</p>
+                <p class="station-distance">0.5 miles away</p>
+            </div>
+            
+            <div class="gas-station">
+                <h3 class="station-name">Exxon Mobil</h3>
+                <p class="station-address">456 Elm St, Anytown, USA</p>
+                <p class="station-distance">1.2 miles away</p>
+            </div>
+            
+            <div class="gas-station">
+                <h3 class="station-name">BP</h3>
+                <p class="station-address">789 Oak St, Anytown, USA</p>
+                <p class="station-distance">2.0 miles away</p>
+            </div>
+            
+            <button class="Nearest-gas-button">Find Gas</button>
+        </aside>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module" src="Main_UI/app.js"></script>
+</body>
+</html>
