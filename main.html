@@ -55,32 +55,35 @@
             <div class="list-title">Nearest Gas Stations</div>
             <hr>
 
-            <!-- Example lang ni-->
-            <!-- Gas Station Items -->
-            <div class="gas-station">
-                <h3 class="station-name">Shell Gas Station</h3>
-                <p class="station-address">123 Main St, Anytown, USA</p>
-                <p class="station-distance">0.5 miles away</p>
+            <div class="card-container">
+                <!-- Example lang ni-->
+                <!-- Gas Station Items -->
+                <div class="gas-station">
+                    <h3 class="station-name">Shell Gas Station</h3>
+                    <p class="station-address">123 Main St, Anytown, USA</p>
+                    <p class="station-distance">0.5 miles away</p>
+                </div>
+                
+                <div class="gas-station">
+                    <h3 class="station-name">Exxon Mobil</h3>
+                    <p class="station-address">456 Elm St, Anytown, USA</p>
+                    <p class="station-distance">1.2 miles away</p>
+                </div>
+                
+                <div class="gas-station">
+                    <h3 class="station-name">BP</h3>
+                    <p class="station-address">789 Oak St, Anytown, USA</p>
+                    <p class="station-distance">2.0 miles away</p>
+                </div>
             </div>
             
-            <div class="gas-station">
-                <h3 class="station-name">Exxon Mobil</h3>
-                <p class="station-address">456 Elm St, Anytown, USA</p>
-                <p class="station-distance">1.2 miles away</p>
-            </div>
-            
-            <div class="gas-station">
-                <h3 class="station-name">BP</h3>
-                <p class="station-address">789 Oak St, Anytown, USA</p>
-                <p class="station-distance">2.0 miles away</p>
-            </div>
-            
-            <button class="Nearest-gas-button">Find Gas</button>
+            <button class="Nearest-gas-button findGas">Find Gas</button>
         </aside>
     </div>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script type="module" src="Main_UI/app.js"></script>
+    <script type="module" src="Frontend/Interaction/app.js"></script>
+    <!--Frontend/Interaction/app.js-->
 </body>
 </html>
