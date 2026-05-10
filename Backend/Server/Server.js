@@ -7,7 +7,7 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../../secrets.env')});
 //loadEnv();
 
-console.log(process.env.ORS_API_KEY);
+
 app.use(express.json());
 app.use(cors());
 try{
@@ -17,7 +17,7 @@ try{
     const openRoute = require("../Routes/OpenRoute");
 
     app.use("/fun",testRoute);
-    app.use("/api",gasStation);
+    //app.use("/api",gasStation);
     app.use("/api",gasFilter);
     app.use("/api",openRoute);
 }catch(err){

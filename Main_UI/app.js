@@ -127,7 +127,7 @@ function haversineDistanceKm(a, b) {
 function extractRouteSummary(routeGeoJson) {
     const feature = routeGeoJson?.features?.[0];
     const summary = feature?.properties?.summary;
-
+    console.log(summary.distance);
     if (summary && typeof summary.distance === "number") {
         return {
             distanceMeters: summary.distance,
@@ -177,7 +177,8 @@ function drawRoadRoute(geojson) {
     }
 
     clearRouteLine();
-
+    console.log("Draw Data")
+    console.log(geojson);
     // ORS returns standard GeoJSON with [lng, lat] coordinate order.
     routeLine = L.geoJSON(geojson, {
         style: {
@@ -207,6 +208,7 @@ async function fetchAndDrawRoadRoute(userCoordinates, station) {
         }
 
         const summary = extractRouteSummary(routeGeoJson);
+        //console.log("summary Result: "+summary);
         selectedRouteSummary = summary
             ? { status: "success", ...summary }
             : { status: "failed" };
