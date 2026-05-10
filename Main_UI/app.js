@@ -29,6 +29,177 @@ let selectedStationIndex = null;
 let routeRequestId = 0;
 let selectedRouteSummary = null;
 
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors"
+}).addTo(map);
+
+function clearStationMarkers() {
+    stationMarkers.forEach((marker) => {
+        map.removeLayer(marker);
+    });
+
+    stationMarkers = [];
+}
+
+function clearRouteLine() {
+    if (routeLine) {
+        map.removeLayer(routeLine);
+        routeLine = null;
+    }
+}
+
+function toFiniteNumber(value) {
+    if (typeof value === "number") {
+        return Number.isFinite(value) ? value : null;
+    }
+
+    if (typeof value === "string") {
+        const trimmed = value.trim();
+        if (trimmed.length === 0) {
+            return null;
+        }
+
+        const numberValue = Number(trimmed);
+        return Number.isFinite(numberValue) ? numberValue : null;
+    }
+
+    return null;
+}
+
+function getStationCoordinates(station) {
+    if (!station || typeof station !== "object") {
+        return null;
+    }
+
+    const rawLat = station.lat ?? station.center?.lat ?? station.latitude ?? station.geometry?.lat;
+    const rawLon =
+        station.lon ??
+        station.center?.lon ??
+        station.lng ??
+        station.longitude ??
+        station.geometry?.lon ??
+        station.geometry?.lng;
+
+    const lat = toFiniteNumber(rawLat);
+    const lon = toFiniteNumber(rawLon);
+
+    if (lat === null || lon === null) {
+        return null;
+    }
+
+    if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+        return null;
+    }
+
+    return { lat, lon };
+}
+
+function normalizeStation(station) {
+    const coords = getStationCoordinates(station);
+    if (!coords) {
+        return null;
+    }
+
+    return { ...station, lat: coords.lat, lon: coords.lon };
+}
+
+function isValidStation(station) {
+    return getStationCoordinates(station) !== null;
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function toRadians(deg) {
+    return (deg * Math.PI) / 180;
+}
+
+function haversineDistanceKm(a, b) {
+    // a: { lat, lng }  b: { lat, lon }
+    const earthRadiusKm = 6371;
+    const lat1 = toRadians(a.lat);
+    const lat2 = toRadians(b.lat);
+    const deltaLat = toRadians(b.lat - a.lat);
+    const deltaLng = toRadians(b.lon - a.lng);
+
+    const sinLat = Math.sin(deltaLat / 2);
+    const sinLng = Math.sin(deltaLng / 2);
+    const x = sinLat * sinLat + Math.cos(lat1) * Math.cos(lat2) * sinLng * sinLng;
+    const c = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+    return earthRadiusKm * c;
+}
+
+function extractRouteSummary(routeGeoJson) {
+    const feature = routeGeoJson?.features?.[0];
+    const summary = feature?.properties?.summary;
+    console.log(summary.distance);
+    if (summary && typeof summary.distance === "number") {
+        return {
+            distanceMeters: summary.distance,
+            durationSeconds: typeof summary.duration === "number" ? summary.duration : null
+        };
+    }
+
+    const segments = feature?.properties?.segments;
+    if (Array.isArray(segments) && segments.length > 0) {
+        const distanceMeters = segments.reduce((total, segment) => {
+            return total + (typeof segment?.distance === "number" ? segment.distance : 0);
+        }, 0);
+
+        const durationSeconds = segments.reduce((total, segment) => {
+            return total + (typeof segment?.duration === "number" ? segment.duration : 0);
+        }, 0);
+
+        if (distanceMeters > 0) {
+            return {
+                distanceMeters,
+                durationSeconds: durationSeconds > 0 ? durationSeconds : null
+            };
+        }
+    }
+
+    return null;
+}
+
+function drawStraightLineToStation(userCoordinates, station) {
+    if (!userCoordinates || !isValidStation(station)) {
+        return;
+    }
+
+    clearRouteLine();
+    routeLine = L.polyline(
+        [
+            [userCoordinates.lat, userCoordinates.lng],
+            [station.lat, station.lon]
+        ],
+        { weight: 4, opacity: 0.9, color: "#007bff" }
+    ).addTo(map);
+}
+
+function drawRoadRoute(geojson) {
+    if (!geojson) {
+        return;
+    }
+
+    clearRouteLine();
+    console.log("Draw Data")
+    console.log(geojson);
+    // ORS returns standard GeoJSON with [lng, lat] coordinate order.
+    routeLine = L.geoJSON(geojson, {
+        style: {
+            color: "#007bff",
+            weight: 4,
+            opacity: 0.9
+        }
+    }).addTo(map);
+}
+
 async function fetchAndDrawRoadRoute(userCoordinates, station) {
     if (!userCoordinates || !isValidStation(station)) {
         return;
@@ -48,6 +219,7 @@ async function fetchAndDrawRoadRoute(userCoordinates, station) {
         }
 
         const summary = extractRouteSummary(routeGeoJson);
+        //console.log("summary Result: "+summary);
         selectedRouteSummary = summary
             ? { status: "success", ...summary }
             : { status: "failed" };

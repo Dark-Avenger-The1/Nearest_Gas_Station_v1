@@ -23,8 +23,8 @@ btn.addEventListener("click",async ()=>{
 
     console.log(data2);
     
-    const data3=await mapGasData(data2.data,userData);
+    //const data3=await mapGasData(data2.data,userData);
 
     console.log("Map Data");
-    console.log(data3);
+    //console.log(data3);
 });
