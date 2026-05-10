@@ -3,8 +3,19 @@ import { getGasStation } from "../Frontend/Hooks/testGasStation.js";
 import { gasFilter } from "../Frontend/Hooks/testGasFilter.js";
 import { getRoute } from "../Frontend/Hooks/getRoute.js";
 
+import {
+    clearRouteLine,
+    createMap,
+    drawRoadRoute,
+    drawStraightLineToStation,
+    renderGasStations
+} from "./lib/mapRendering.js";
+import { isValidStation, normalizeStation } from "./lib/stations.js";
+import { extractRouteSummary } from "./lib/routing.js";
+import { renderStationList } from "./lib/stationListView.js";
+
 const defaultCenter = [7.426401792405303, 125.79344414105464];
-const map = L.map("map").setView(defaultCenter, 13);
+const map = createMap("map", defaultCenter, 13);
 const locateButton = document.querySelector(".locate_user");
 const selectedStationPanel = document.querySelector("#selected-station");
 
@@ -213,8 +224,11 @@ async function fetchAndDrawRoadRoute(userCoordinates, station) {
             ? { status: "success", ...summary }
             : { status: "failed" };
 
-        drawRoadRoute(routeGeoJson);
-        renderStationList(currentStations, selectedStationIndex);
+        routeLine = drawRoadRoute(map, routeLine, routeGeoJson);
+        renderStationList(selectedStationPanel, currentStations, {
+            selectedIndex: selectedStationIndex,
+            selectedRouteSummary
+        });
     } catch (error) {
         // If routing fails (missing API key, network, etc.), fall back to a straight line.
         if (requestId !== routeRequestId) {
@@ -223,125 +237,11 @@ async function fetchAndDrawRoadRoute(userCoordinates, station) {
 
         console.warn("Failed to fetch road route, falling back to straight line:", error?.message || error);
         selectedRouteSummary = { status: "failed" };
-        drawStraightLineToStation(userCoordinates, station);
-        renderStationList(currentStations, selectedStationIndex);
-    }
-}
-
-function getStationName(station) {
-    return station.tags?.name || station.tags?.brand || "Gas Station";
-}
-
-function renderStationList(stations, selectedIndex = null) {
-    
-    if (!selectedStationPanel) {
-        return;
-    }
-    console.log("Render Station List Hit. "+stations.length+" "+stations);
-
-    if (!Array.isArray(stations) || stations.length === 0) {
-        selectedStationPanel.innerHTML = `
-            <div class="gas-station">
-                <h3 class="station-name">No nearby stations</h3>
-                <p class="station-distance">Click "Locate Me" to load nearby stations.</p>
-            </div>
-        `;
-        return;
-    }
-
-    const selectedStation =
-        typeof selectedIndex === "number" && selectedIndex >= 0 && selectedIndex < stations.length
-            ? stations[selectedIndex]
-            : null;
-
-    const selectedCard = selectedStation
-        ? (() => {
-            const stationName = escapeHtml(getStationName(selectedStation));
-            const routeStatus = selectedRouteSummary?.status;
-
-            const distanceText = (() => {
-                if (routeStatus === "loading") {
-                    return "Calculating route distance...";
-                }
-
-                if (routeStatus === "success" && typeof selectedRouteSummary?.distanceMeters === "number") {
-                    const km = selectedRouteSummary.distanceMeters / 1000;
-                    const minutes =
-                        typeof selectedRouteSummary?.durationSeconds === "number"
-                            ? Math.max(1, Math.round(selectedRouteSummary.durationSeconds / 60))
-                            : null;
-
-                    return minutes === null
-                        ? `${km.toFixed(2)} km (by road)`
-                        : `${km.toFixed(2)} km • ${minutes} min (by road)`;
-                }
-
-                if (routeStatus === "failed") {
-                    return "Route distance unavailable";
-                }
-
-                return "Click again to calculate route";
-            })();
-
-            return `
-                <div class="gas-station selected-summary">
-                    <h3 class="station-name">${stationName}</h3>
-                    <p class="station-distance">${escapeHtml(distanceText)}</p>
-                </div>
-            `;
-        })()
-        : `
-            <div class="gas-station selected-summary">
-                <h3 class="station-name">No station selected</h3>
-                <p class="station-distance">Click a station name to draw a line.</p>
-            </div>
-        `;
-
-    const stationCards = stations
-        .map((station, index) => {
-            const stationName = escapeHtml(getStationName(station));
-            const selectedClass = index === selectedIndex ? " is-selected" : "";
-            return `
-                <div class="gas-station station-item${selectedClass}" data-station-index="${index}">
-                    <h3 class="station-name">${stationName}</h3>
-                </div>
-            `;
-        })
-        .join("");
-
-    selectedStationPanel.innerHTML = `
-        ${selectedCard}
-        <div class="gas-station">
-            <p class="station-distance">Filtered stations: ${stations.length}</p>
-        </div>
-        ${stationCards}
-    `;
-}
-
-function renderGasStations(stations, userCoordinates) {
-    clearStationMarkers();
-    clearRouteLine();
-    console.log("Render Gas Stations Hit. "+stations.length+" "+stations);
-    console.log("Data:"+stations);
-    const validStations = Array.isArray(stations) ? stations.filter(isValidStation) : [];
-
-    const bounds = [
-        [userCoordinates.lat, userCoordinates.lng]
-    ];
-
-    validStations.forEach((station) => {
-        const marker = L.marker([station.lat, station.lon])
-            .addTo(map)
-            .bindPopup(`
-                <strong>${escapeHtml(getStationName(station))}</strong>
-            `);
-
-        stationMarkers.push(marker);
-        bounds.push([station.lat, station.lon]);
-    });
-
-    if (bounds.length > 1) {
-        map.fitBounds(bounds, { padding: [40, 40] });
+        routeLine = drawStraightLineToStation(map, routeLine, userCoordinates, station);
+        renderStationList(selectedStationPanel, currentStations, {
+            selectedIndex: selectedStationIndex,
+            selectedRouteSummary
+        });
     }
 }
 
@@ -362,8 +262,11 @@ if (selectedStationPanel) {
 
         selectedStationIndex = markerIndex;
         selectedRouteSummary = { status: "loading" };
-        clearRouteLine();
-        renderStationList(currentStations, selectedStationIndex);
+        routeLine = clearRouteLine(map, routeLine);
+        renderStationList(selectedStationPanel, currentStations, {
+            selectedIndex: selectedStationIndex,
+            selectedRouteSummary
+        });
 
         if (currentUserCoordinates && station) {
             fetchAndDrawRoadRoute(currentUserCoordinates, station);
@@ -376,7 +279,7 @@ if (selectedStationPanel) {
 }
 
 // Panel starts empty in HTML; populate the initial placeholder.
-renderStationList([]);
+renderStationList(selectedStationPanel, []);
 
 async function handleLocateUser() {
     if (!locateButton) {
@@ -397,23 +300,14 @@ async function handleLocateUser() {
         if (userMarker) {
             userMarker.setLatLng([userCoordinates.lat, userCoordinates.lng]);
         } else {
-            userMarker = L.marker([userCoordinates.lat, userCoordinates.lng])
-                .addTo(map)
-                .bindPopup("You are here.");
+            userMarker = L.marker([userCoordinates.lat, userCoordinates.lng]).addTo(map).bindPopup("You are here.");
         }
 
         userMarker.openPopup();
 
-        const nearbyStations = await getGasStation(
-            userCoordinates.lat,
-            userCoordinates.lng
-        );
+        const nearbyStations = await getGasStation(userCoordinates.lat, userCoordinates.lng);
         console.log("Nearby stations fetched:", nearbyStations);
-        const filteredResponse = await gasFilter(
-            userCoordinates.lat,
-            userCoordinates.lng,
-            nearbyStations
-        );
+        const filteredResponse = await gasFilter(userCoordinates.lat, userCoordinates.lng, nearbyStations);
 
         console.log("Filtered stations response:", filteredResponse.data);
         if (!filteredResponse || filteredResponse.status !== "success") {
@@ -425,8 +319,22 @@ async function handleLocateUser() {
             : [];
 
         currentStations = filteredStations;
-        renderStationList(currentStations, selectedStationIndex);
-        renderGasStations(currentStations, userCoordinates);
+        renderStationList(selectedStationPanel, currentStations, {
+            selectedIndex: selectedStationIndex,
+            selectedRouteSummary
+        });
+
+        const renderResult = renderGasStations({
+            map,
+            stations: currentStations,
+            userCoordinates,
+            stationMarkers,
+            routeLine
+        });
+
+        stationMarkers = renderResult.stationMarkers;
+        routeLine = renderResult.routeLine;
+
         console.log("Rendered gas stations:", filteredResponse.data);
     } catch (error) {
         console.error("Unable to get user location or gas stations:", error.message);
