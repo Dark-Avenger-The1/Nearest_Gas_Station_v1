@@ -4,9 +4,6 @@ const router = express.Router();
 
 router.post("/route", async (req, res) => {
     const { start, end, profile = "driving-car" } = req.body;
-    console.log("ORS API Hit!");
-    console.log(req.body);
-    console.log(process.env.ORS_API_KEY);
     if (!process.env.ORS_API_KEY) {
         return res.status(500).json({
             status: "failed",

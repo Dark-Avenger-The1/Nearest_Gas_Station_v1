@@ -18,6 +18,8 @@ export function pinCurrentLoc(loc,type,map){
 
 export function pinGasStation(gas,currLoc,map){
     clearStationMarkers(map);
+    if(gas===null || gas.length===0) return;
+
     const bounds = [
         [currLoc.lat,currLoc.lng]
     ];

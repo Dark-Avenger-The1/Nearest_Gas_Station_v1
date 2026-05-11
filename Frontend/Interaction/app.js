@@ -5,25 +5,27 @@ import { setCurrentLocation,extractCurrentLoc, ifUser} from "../MapScript/curren
 import { pinCurrentLoc,pinGasStation } from "../MapScript/MapPin.js";
 import { escapeHtml } from "../../Helper/UtilsHelper.js";
 import GasStation from "../Data/GasData.js";
+import { renderGasCards } from "../Render/RenderCards.js";
 
 const defaultCenter = [7.426401792405303, 125.79344414105464];
 const map = L.map("map").fitWorld();
 
-
+const travelModeButtons = document.querySelectorAll(".travel-mode")
 const locateButton = document.querySelector(".locate_user");
 const btnFindGas = document.querySelector(".findGas");
 const selectedStationPanel = document.querySelector("#selected-station");
 
-// let userMarker = null;
-// let stationMarkers = [];
-// let routeLine = null;
+renderGasCards(null);
 
-//let currentUserCoordinates = null;
-// let currentStations = [];
-// let selectedStationIndex = null;
-// let routeRequestId = 0;
-// let selectedRouteSummary = null;
+travelModeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+        travelModeButtons.forEach((modeButton) => {
+            modeButton.classList.remove("active");
+        });
 
+        button.classList.add("active");
+    });
+});
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "&copy; OpenStreetMap contributors"
@@ -56,17 +58,18 @@ btnFindGas.addEventListener("click",async()=>{
         const filteredGas = await gasFilter(currentLoc.lat,currentLoc.lng,gasStations);
         console.log(gasStations);
         console.log(filteredGas);
-        //gasManage.mapGasData(filteredGas.data,currentLoc);
+        gasManage.mapGasData(filteredGas.data,currentLoc);
         gasManage.loadFromStorage();
         const finalGas = gasManage.getAll();
         console.log(finalGas);
         pinGasStation(finalGas,currentLoc,map);
+        renderGasCards(finalGas);
     }catch(err){
         const msg = (extractCurrentLoc()===null)?"Press Locate Me or Search Location":err.message;
         alert(msg);
     }finally{
         btnFindGas.disabled=false;
-        btnFindGas.innerText = "Find Near Gas";
+        btnFindGas.innerText = "Find Gas";
     }
 });
 
