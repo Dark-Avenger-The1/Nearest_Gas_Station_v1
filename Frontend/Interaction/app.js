@@ -6,6 +6,7 @@ import { pinCurrentLoc,pinGasStation } from "../MapScript/MapPin.js";
 import { escapeHtml } from "../../Helper/UtilsHelper.js";
 import GasStation from "../Data/GasData.js";
 import { renderGasCards } from "../Render/RenderCards.js";
+import { drawRoadRoute } from "../MapScript/MapDraw.js";
 
 const defaultCenter = [7.426401792405303, 125.79344414105464];
 const map = L.map("map").fitWorld();
@@ -14,6 +15,7 @@ const travelModeButtons = document.querySelectorAll(".travel-mode")
 const locateButton = document.querySelector(".locate_user");
 const btnFindGas = document.querySelector(".findGas");
 const selectedStationPanel = document.querySelector("#selected-station");
+let profile = "driving-car";
 
 renderGasCards(null);
 
@@ -22,7 +24,8 @@ travelModeButtons.forEach((button) => {
         travelModeButtons.forEach((modeButton) => {
             modeButton.classList.remove("active");
         });
-
+        profile = button.dataset.profile;
+        console.log(profile);
         button.classList.add("active");
     });
 });
@@ -58,12 +61,14 @@ btnFindGas.addEventListener("click",async()=>{
         const filteredGas = await gasFilter(currentLoc.lat,currentLoc.lng,gasStations);
         console.log(gasStations);
         console.log(filteredGas);
-        gasManage.mapGasData(filteredGas.data,currentLoc);
-        gasManage.loadFromStorage();
+        console.log("Profile: "+profile)
+        await gasManage.mapGasData(filteredGas.data,currentLoc,profile);
+        await gasManage.loadFromStorage();
         const finalGas = gasManage.getAll();
         console.log(finalGas);
         pinGasStation(finalGas,currentLoc,map);
         renderGasCards(finalGas);
+        bindCardEvent();
     }catch(err){
         const msg = (extractCurrentLoc()===null)?"Press Locate Me or Search Location":err.message;
         alert(msg);
@@ -73,11 +78,18 @@ btnFindGas.addEventListener("click",async()=>{
     }
 });
 
-
-
-
-
-
-
+function bindCardEvent(){
+    const cards = document.querySelectorAll(".gas-card");
+    cards.forEach((card)=>{
+        card.addEventListener("click",()=>{
+            const id = card.dataset.id;
+            const gasManage = new GasStation();
+            gasManage.loadFromStorage();
+            const gas = gasManage.extractGasDirection(Number(id));
+            console.log(gas);
+            drawRoadRoute(gas,map);
+        });
+    });
+}
 
 
