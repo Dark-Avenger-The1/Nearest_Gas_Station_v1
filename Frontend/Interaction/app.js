@@ -15,6 +15,7 @@ const locateButton = document.querySelector(".locate_user");
 const btnFindGas = document.querySelector(".findGas");
 const selectedStationPanel = document.querySelector("#selected-station");
 
+renderGasCards(null);
 
 travelModeButtons.forEach((button) => {
     button.addEventListener("click", () => {

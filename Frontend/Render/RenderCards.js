@@ -1,5 +1,5 @@
 import { escapeHtml } from "../../Helper/UtilsHelper.js";
-
+import { extractRouteSummary } from "../Data/ExtractSummary.js";
 export function renderGasCards(data){
     console.log("Render Hit!");
     console.log(data);
@@ -12,14 +12,17 @@ export function renderGasCards(data){
             </div>
         `;
         container.innerHTML+=elem;
+        return;
     }
 
     data.forEach((val)=>{
+        const summary = extractRouteSummary(val.locData);
+        console.log(summary);
         const elem = `
             <div class="gas-station">
                 <h3 class="station-name">${escapeHtml(val.stationName)}</h3>
-                <p class="station-address"></p>
-                <p class="station-distance">2.0 miles away</p>
+                <p class="station-address">Duration Expected Arrive: ${summary.duration}</p>
+                <p class="station-distance">${summary.distance}</p>
             </div>
         `;
         container.innerHTML+=elem;
