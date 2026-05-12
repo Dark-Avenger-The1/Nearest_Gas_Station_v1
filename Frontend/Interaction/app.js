@@ -7,6 +7,7 @@ import { escapeHtml } from "../../Helper/UtilsHelper.js";
 import GasStation from "../Data/GasData.js";
 import { renderGasCards } from "../Render/RenderCards.js";
 import { drawRoadRoute } from "../MapScript/MapDraw.js";
+import { hideLoadingScreen, showLoadingScreen, updateLoadingScreen, waitForLoadingStep } from "./loadingscreen.js";
 
 const defaultCenter = [7.426401792405303, 125.79344414105464];
 const map = L.map("map").fitWorld();
@@ -56,11 +57,19 @@ btnFindGas.addEventListener("click",async()=>{
         btnFindGas.innerText = "Finding...";
         let gasManage = new GasStation();
         const currentLoc = extractCurrentLoc();
+        if(currentLoc===null) throw new Error("Press Locate Me or Search Location");
 
+        showLoadingScreen("Fetching nearby gas stations...");
         const gasStations = await getGasStation(currentLoc.lat,currentLoc.lng);
+        updateLoadingScreen(`${gasStations.length} gas stations fetched`);
+        await waitForLoadingStep();
+        updateLoadingScreen("Filtering gas stations...");
         const filteredGas = await gasFilter(currentLoc.lat,currentLoc.lng,gasStations);
+        updateLoadingScreen(`${filteredGas.data.length} gas stations successfully filtered`, "Successfully filtered");
+        await waitForLoadingStep();
         console.log(gasStations);
         console.log(filteredGas);
+        
         console.log("Profile: "+profile)
         await gasManage.mapGasData(filteredGas.data,currentLoc,profile);
         await gasManage.loadFromStorage();
@@ -70,9 +79,9 @@ btnFindGas.addEventListener("click",async()=>{
         renderGasCards(finalGas);
         bindCardEvent();
     }catch(err){
-        const msg = (extractCurrentLoc()===null)?"Press Locate Me or Search Location":err.message;
-        alert(msg);
+        alert(err.message);
     }finally{
+        hideLoadingScreen();
         btnFindGas.disabled=false;
         btnFindGas.innerText = "Find Gas";
     }
