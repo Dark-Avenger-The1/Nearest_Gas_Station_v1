@@ -28,7 +28,7 @@ class GasStation {
     }
 
     // ✅ Fetch routes and store
-    async mapGasData(data, userData) {
+    async mapGasData(data, userData,profile) {
         const resArr = [];
 
         for(const val of data) {
@@ -38,7 +38,7 @@ class GasStation {
                 : { lat: val.center.lat, lng: val.center.lon };
 
             try {
-                const response = await getRoute(start, end);
+                const response = await getRoute(start, end,profile);
                 resArr.push({
                     id: val.id,
                     lat: end.lat,

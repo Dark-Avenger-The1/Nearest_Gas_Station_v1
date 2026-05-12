@@ -19,7 +19,7 @@ export function renderGasCards(data){
         const summary = extractRouteSummary(val.locData);
         console.log(summary);
         const elem = `
-            <div class="gas-station">
+            <div class="gas-station gas-card" data-id="${val.id}">
                 <h3 class="station-name">${escapeHtml(val.stationName)}</h3>
                 <p class="station-address">Duration Expected Arrive: ${summary.duration}</p>
                 <p class="station-distance">${summary.distance}</p>
