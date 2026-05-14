@@ -1,3 +1,4 @@
+// Theme
 $bg: #f4f4f4;
 $dark: #222;
 $white: #fff;
@@ -6,6 +7,7 @@ $accent-hover: rgb(164, 254, 54);
 $blue: #007bff;
 $shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
+// Base
 * {
   box-sizing: border-box;
 }
@@ -19,7 +21,7 @@ body {
   overflow: hidden;
 }
 
-/* HEADER */
+// Header
 .header {
   min-height: 64px;
   background: $dark;
@@ -45,6 +47,7 @@ body {
   flex-wrap: wrap;
 }
 
+// Controls
 .travel-mode,
 .locate_user {
   border: none;
@@ -95,6 +98,7 @@ body {
   }
 }
 
+// Layout
 .layout {
   height: calc(100vh - 64px);
   display: grid;
@@ -117,6 +121,7 @@ body {
   z-index: 0;
 }
 
+// Loading overlay
 .loading-screen {
   position: fixed;
   inset: 0;
@@ -170,6 +175,7 @@ body {
   }
 }
 
+// Station panel
 .panel {
   width: 100%;
   max-height: calc(100vh - 104px);
@@ -241,6 +247,7 @@ body {
   }
 }
 
+// Responsive layout
 @media (max-width: 900px) {
   body {
     height: auto;
