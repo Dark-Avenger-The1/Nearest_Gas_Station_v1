@@ -8,11 +8,11 @@ export function getCoordinates() {
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                currentCoordinates = {
+                localStorage.setItem("userCoordinates", JSON.stringify({
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
-                };
-
+                }));
+                loadCoordinatesFromStorage();
                 resolve(currentCoordinates);
             },
             (error) => {
@@ -29,4 +29,34 @@ export function getCoordinates() {
 
 export function extractCoordinates() {
     return currentCoordinates;
+}
+
+export function loadCoordinatesFromStorage() {
+    const stored = localStorage.getItem("userCoordinates");
+    if (!stored) {
+       currentCoordinates = null;
+       return null;
+    }
+
+    currentCoordinates = JSON.parse(stored);
+    return currentCoordinates;
+}
+
+export function clearCoordinates(){
+    currentCoordinates = null;
+    localStorage.removeItem("userCoordinates");
+}
+
+export function clearCoordinatesReloadShortcut(){
+    window.addEventListener("keydown", (event) =>{
+        const isHardReload = 
+        event.ctrlKey &&
+        event.shiftKey &&
+        event.key.toLowerCase === "r";
+
+        if(isHardReload){
+            clearCoordinates();
+            console.log("Event hit");
+        }
+    });
 }

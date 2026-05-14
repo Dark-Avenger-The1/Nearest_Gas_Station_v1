@@ -1,4 +1,4 @@
-import { extractCoordinates, getCoordinates } from "../MapScript/coordinates.js";
+import { extractCoordinates, getCoordinates, loadCoordinatesFromStorage, clearCoordinatesReloadShortcut} from "../MapScript/coordinates.js";
 import { getGasStation } from "../Hooks/testGasStation.js";
 import { gasFilter } from "../Hooks/testGasFilter.js";
 import { setCurrentLocation,extractCurrentLoc, ifUser} from "../MapScript/currentLocation.js";
@@ -101,4 +101,19 @@ function bindCardEvent(){
     });
 }
 
+async function initialLoad(){
+    //diri kay kada refresh dapat ang mapa naa gihapon sa specific destination sa mapa. dapat ang ctrl + shift + r ra reset
+    const savedLocation = loadCoordinatesFromStorage();
+    console.log("Local: "+savedLocation);
+    if(savedLocation){
+        setCurrentLocation(savedLocation, true);
+        pinCurrentLoc(savedLocation,ifUser(),map);
+        return;
+    }
+
+    map.setView(defaultCenter,15)
+}
+
+initialLoad();
+clearCoordinatesReloadShortcut();
 
