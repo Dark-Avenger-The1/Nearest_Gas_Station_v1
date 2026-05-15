@@ -17,7 +17,7 @@ export async function gasFilter(lat,lng,arr){
 
         const responseData = await response.json();
 
-        if(responseData.status!=success){
+        if(responseData.status!="success"){
             throw new Error(responseData.message);
         }
         return responseData;
