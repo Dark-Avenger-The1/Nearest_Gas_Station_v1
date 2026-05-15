@@ -63,8 +63,7 @@ body {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.travel-mode:hover,
-.travel-mode.active {
+.travel-mode:hover, .travel-mode.active {
   background: rgb(164, 254, 54);
   border-color: rgb(164, 254, 54);
   color: #222;
@@ -201,24 +200,21 @@ body {
   color: #007bff;
   font-weight: bold;
 }
-
-.panel .Nearest-gas-button{
+.panel .Nearest-gas-button {
   align-self: center;
   margin-top: auto;
-  margin-bottom:10px;
-  color:rgb(0, 0, 0);
+  margin-bottom: 10px;
+  color: rgb(0, 0, 0);
   border: 2px solid #007bff;
   border-radius: 5px;
   font-size: 16px;
-  padding:10px;
+  padding: 10px;
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
-
-.panel .Nearest-gas-button:hover{
+.panel .Nearest-gas-button:hover {
   background-color: #007bff;
-  border: 2px solid;
   border-color: black;
-  color: white;
+  color: #fff;
   cursor: pointer;
 }
 
@@ -228,18 +224,15 @@ body {
     min-height: 100vh;
     overflow: auto;
   }
-
   .layout {
     grid-template-columns: 1fr;
     height: auto;
     min-height: calc(100vh - 64px);
   }
-
   #map {
     min-height: 620px;
     height: 72vh;
   }
-
   .panel {
     max-height: none;
   }
@@ -250,36 +243,30 @@ body {
     flex-direction: column;
     padding: 12px;
   }
-
   .header-actions {
     width: 100%;
     justify-content: space-between;
     gap: 8px;
   }
-
   .travel-mode {
     width: 40px;
     height: 40px;
     flex: 0 0 40px;
   }
-
   .locate_user {
     flex: 1 1 auto;
     padding-inline: 12px;
   }
-
   .layout {
     min-height: auto;
     padding: 12px;
     gap: 14px;
   }
-
   #map {
     min-height: 480px;
     height: 64vh;
     border-radius: 10px;
   }
-
   .panel {
     padding: 14px;
     border-radius: 10px;
