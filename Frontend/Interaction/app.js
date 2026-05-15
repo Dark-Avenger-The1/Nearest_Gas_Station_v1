@@ -6,7 +6,7 @@ import { pinCurrentLoc,pinGasStation } from "../MapScript/MapPin.js";
 import { escapeHtml } from "../../Helper/UtilsHelper.js";
 import GasStation from "../Data/GasData.js";
 import { renderGasCards } from "../Render/RenderCards.js";
-import { drawRoadRoute } from "../MapScript/MapDraw.js";
+import { drawRoadRoute,clearRouteLine } from "../MapScript/MapDraw.js";
 import { hideLoadingScreen, showLoadingScreen, updateLoadingScreen, waitForLoadingStep } from "./loadingscreen.js";
 
 const defaultCenter = [7.426401792405303, 125.79344414105464];
@@ -77,6 +77,7 @@ btnFindGas.addEventListener("click",async()=>{
         console.log(finalGas);
         pinGasStation(finalGas,currentLoc,map);
         renderGasCards(finalGas);
+        clearRouteLine(map);    
         bindCardEvent();
     }catch(err){
         alert(err.message);
@@ -91,6 +92,7 @@ function bindCardEvent(){
     const cards = document.querySelectorAll(".gas-card");
     cards.forEach((card)=>{
         card.addEventListener("click",()=>{
+            
             const id = card.dataset.id;
             const gasManage = new GasStation();
             gasManage.loadFromStorage();

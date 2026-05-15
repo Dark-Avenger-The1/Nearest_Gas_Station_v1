@@ -18,7 +18,7 @@ export function drawRoadRoute(geojson,map) {
     }).addTo(map);
 }
 
-function clearRouteLine(map) {
+export function clearRouteLine(map) {
     if (routeLine) {
         map.removeLayer(routeLine);
         routeLine = null;
