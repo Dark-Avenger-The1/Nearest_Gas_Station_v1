@@ -8,6 +8,7 @@ router.post("/FilterGas",(req,res)=>{
     try{
         console.log(req.body);
         let reqArr =req.body.gasData;
+        if(reqArr.length ===0 || reqArr===null || reqArr===undefined) throw new Error("Missing gasData");
         let distanceArr = [];
         let responseArray = [];
         let length = (reqArr.length>3)?3:reqArr.length;
@@ -50,7 +51,11 @@ router.post("/FilterGas",(req,res)=>{
 
         res.json(response);
     }catch(err){
-        console.log(err.message);
+        const response = {
+            status:"failed",
+            message:err.message
+        };
+        res.json(response);
     }
 
 

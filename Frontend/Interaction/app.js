@@ -1,4 +1,4 @@
-import { extractCoordinates, getCoordinates } from "../MapScript/coordinates.js";
+import { extractCoordinates, getCoordinates, loadCoordinatesFromStorage, clearCoordinatesReloadShortcut} from "../MapScript/coordinates.js";
 import { getGasStation } from "../Hooks/testGasStation.js";
 import { gasFilter } from "../Hooks/testGasFilter.js";
 import { setCurrentLocation,extractCurrentLoc, ifUser} from "../MapScript/currentLocation.js";
@@ -6,7 +6,7 @@ import { pinCurrentLoc,pinGasStation } from "../MapScript/MapPin.js";
 import { escapeHtml } from "../../Helper/UtilsHelper.js";
 import GasStation from "../Data/GasData.js";
 import { renderGasCards } from "../Render/RenderCards.js";
-import { drawRoadRoute } from "../MapScript/MapDraw.js";
+import { drawRoadRoute,clearRouteLine } from "../MapScript/MapDraw.js";
 import { hideLoadingScreen, showLoadingScreen, updateLoadingScreen, waitForLoadingStep } from "./loadingscreen.js";
 
 const defaultCenter = [7.426401792405303, 125.79344414105464];
@@ -77,6 +77,7 @@ btnFindGas.addEventListener("click",async()=>{
         console.log(finalGas);
         pinGasStation(finalGas,currentLoc,map);
         renderGasCards(finalGas);
+        clearRouteLine(map);    
         bindCardEvent();
     }catch(err){
         alert(err.message);
@@ -91,6 +92,7 @@ function bindCardEvent(){
     const cards = document.querySelectorAll(".gas-card");
     cards.forEach((card)=>{
         card.addEventListener("click",()=>{
+            
             const id = card.dataset.id;
             const gasManage = new GasStation();
             gasManage.loadFromStorage();
@@ -101,4 +103,19 @@ function bindCardEvent(){
     });
 }
 
+async function initialLoad(){
+    //diri kay kada refresh dapat ang mapa naa gihapon sa specific destination sa mapa. dapat ang ctrl + shift + r ra reset
+    const savedLocation = loadCoordinatesFromStorage();
+    console.log("Local: "+savedLocation);
+    if(savedLocation){
+        setCurrentLocation(savedLocation, true);
+        pinCurrentLoc(savedLocation,ifUser(),map);
+        return;
+    }
+
+    map.setView(defaultCenter,15)
+}
+
+initialLoad();
+clearCoordinatesReloadShortcut();
 

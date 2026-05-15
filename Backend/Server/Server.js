@@ -1,11 +1,9 @@
 const http = require("http");
 const express = require("express");
 const app = express();
-const cors = require("cors");
-//const { loadEnv } = require("../../Helper/loadEnv");
+const cors = require("cors");;
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../../secrets.env')});
-//loadEnv();
 
 
 app.use(express.json());
@@ -17,7 +15,6 @@ try{
     const openRoute = require("../Routes/OpenRoute");
 
     app.use("/fun",testRoute);
-    //app.use("/api",gasStation);
     app.use("/api",gasFilter);
     app.use("/api",openRoute);
 }catch(err){
