@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "cors": "^2.8.6",
-    "express": "^5.2.1"
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "haversine-distance": "^1.2.4"
   },
   "name": "nearest_gas_station",
   "version": "1.0.0",

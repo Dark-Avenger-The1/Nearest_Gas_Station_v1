@@ -1,38 +1,62 @@
-let long =null;
-let lati =null;
+let currentCoordinates = null;
 
+export function getCoordinates() {
+    if (!navigator.geolocation) {
+        return Promise.reject(new Error("Geolocation is not supported by this browser."));
+    }
 
-// mao ni ang function nga mo request sa geolocation API sa browser para makuha ang current location sa user, unya mo store sa latitude ug longitude sa global variables nga long ug lati
-export async function getCoordinates(){
-    if (navigator.geolocation) {
-        console.log("loading....");
-        await navigator.geolocation.getCurrentPosition(
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
             (position) => {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                
-                lati = latitude;
-                long = longitude;
-                console.log("Latitude:", latitude);
-                console.log("Longitude:", longitude);
+                localStorage.setItem("userCoordinates", JSON.stringify({
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                }));
+                loadCoordinatesFromStorage();
+                resolve(currentCoordinates);
             },
             (error) => {
-                console.error("Error getting location:", error.message);
+                reject(new Error(error.message));
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
             }
         );
-    } else {
-        console.log("Geolocation is not supported by this browser.");
-    }
+    });
 }
 
-// mao ni ang function nga mo extract sa latitude ug longitude gikan sa getCoordinates function, unya mo return og object nga naay latitude ug longitude properties
-export function extractCoordinates(){
-    if(lati===null || long ===null){
-        return null;
+export function extractCoordinates() {
+    return currentCoordinates;
+}
+
+export function loadCoordinatesFromStorage() {
+    const stored = localStorage.getItem("userCoordinates");
+    if (!stored) {
+       currentCoordinates = null;
+       return null;
     }
 
-    return {
-        "latitude":lati,
-        "longitude":long
-    };
+    currentCoordinates = JSON.parse(stored);
+    return currentCoordinates;
+}
+
+export function clearCoordinates(){
+    currentCoordinates = null;
+    localStorage.removeItem("userCoordinates");
+}
+
+export function clearCoordinatesReloadShortcut(){
+    window.addEventListener("keydown", (event) =>{
+        const isHardReload = 
+        event.ctrlKey &&
+        event.shiftKey &&
+        event.key.toLowerCase === "r";
+
+        if(isHardReload){
+            clearCoordinates();
+            console.log("Event hit");
+        }
+    });
 }
