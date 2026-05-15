@@ -1,4 +1,4 @@
-//const axios = require('axios');
+
 
 const express = require("express");
 const router = express.Router();
@@ -14,7 +14,7 @@ router.post("/GasStation",async (req,res)=>{
 
     const response = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`);
 
-    //
+    
     console.log("📩 Overpass status:", response.status);      // ADD
     console.log("📩 Overpass ok?:", response.ok);             // ADD
 
@@ -23,7 +23,6 @@ router.post("/GasStation",async (req,res)=>{
 
     const responseData = JSON.parse(rawText);   
 
-    //const responseData = await response.json();
     let feedback = {
       status:"success",
       message:`Successfuly Fetched Gas Station in ${rad}m radius.`,
@@ -42,22 +41,4 @@ router.post("/GasStation",async (req,res)=>{
 
 module.exports = router;
 
-
-/*
-async function getGasStations(lat, lon, radiusMeters = 5000) {
-  // Overpass QL query - finds all fuel/gas stations within radius
-  const query = `
-    [out:json];
-    node["amenity"="fuel"](around:${radiusMeters},${lat},${lon});
-    out body;
-  `;
-
-  const response = await axios.post(
-    'https://overpass-api.de/api/interpreter',
-    `data=${encodeURIComponent(query)}`,
-    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-  );
-
-  return response.data.elements; // array of gas station nodes
-}*/
 

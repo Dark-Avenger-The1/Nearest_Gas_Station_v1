@@ -110,7 +110,6 @@ function toRadians(deg) {
 }
 
 function haversineDistanceKm(a, b) {
-    // a: { lat, lng }  b: { lat, lon }
     const earthRadiusKm = 6371;
     const lat1 = toRadians(a.lat);
     const lat2 = toRadians(b.lat);
