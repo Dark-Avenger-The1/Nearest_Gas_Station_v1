@@ -1,6 +1,6 @@
 import { extractCoordinates, getCoordinates, loadCoordinatesFromStorage, clearCoordinatesReloadShortcut} from "../MapScript/coordinates.js";
-import { getGasStation } from "../Hooks/testGasStation.js";
-import { gasFilter } from "../Hooks/testGasFilter.js";
+import { getGasStation } from "../Hooks/HookGasStation.js";
+import { gasFilter } from "../Hooks/HookGasFilter.js";
 import { setCurrentLocation,extractCurrentLoc, ifUser} from "../MapScript/currentLocation.js";
 import { pinCurrentLoc,pinGasStation } from "../MapScript/MapPin.js";
 import { escapeHtml } from "../../Helper/UtilsHelper.js";
@@ -9,7 +9,7 @@ import { renderGasCards } from "../Render/RenderCards.js";
 import { drawRoadRoute,clearRouteLine } from "../MapScript/MapDraw.js";
 import { hideLoadingScreen, showLoadingScreen, updateLoadingScreen, waitForLoadingStep } from "./loadingscreen.js";
 
-const defaultCenter = [7.426401792405303, 125.79344414105464];
+
 const map = L.map("map").fitWorld();
 
 const travelModeButtons = document.querySelectorAll(".travel-mode")

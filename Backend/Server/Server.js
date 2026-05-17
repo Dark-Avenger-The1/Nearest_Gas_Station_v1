@@ -9,12 +9,9 @@ require('dotenv').config({ path: path.join(__dirname, '../../secrets.env')});
 app.use(express.json());
 app.use(cors());
 try{
-    const testRoute = require("../Routes/TestRoute");
-    const gasStation = require("../Routes/GasStation");
     const gasFilter = require("../Routes/GasFilter");
     const openRoute = require("../Routes/OpenRoute");
 
-    app.use("/fun",testRoute);
     app.use("/api",gasFilter);
     app.use("/api",openRoute);
 }catch(err){

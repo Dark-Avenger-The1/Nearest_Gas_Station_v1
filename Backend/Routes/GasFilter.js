@@ -6,7 +6,7 @@ const {binarySearch} = require("./BinarySearch");
 
 router.post("/FilterGas",(req,res)=>{
     try{
-        console.log(req.body);
+        //console.log(req.body);
         let reqArr =req.body.gasData;
         if(reqArr.length ===0 || reqArr===null || reqArr===undefined) throw new Error("Missing gasData");
         let distanceArr = [];
@@ -26,23 +26,23 @@ router.post("/FilterGas",(req,res)=>{
         mergeSort(reqArr,"id");
         mergeSort(distanceArr,"distance");
         
-        console.log("Sorted");
+        // console.log("Sorted");
         
-        console.log(distanceArr);
-        console.log(reqArr);
+        // console.log(distanceArr);
+        // console.log(reqArr);
         distanceArr.forEach((val)=>{
             responseArray.push(binarySearch(val.id,reqArr,"id"));
-            console.log(binarySearch(val.id,reqArr,"id").tags.name+" Distance: "+val.distance)
+            // console.log(binarySearch(val.id,reqArr,"id").tags.name+" Distance: "+val.distance);
         });
 
         for(let i=0;i<length;i++){
-            console.log("Extracted "+responseArray[i]);
+            //console.log("Extracted "+responseArray[i]);
             finalArr[i]= responseArray[i];
-            console.log("Insert Success "+finalArr[i]);
+            // console.log("Insert Success "+finalArr[i]);
         }
 
-        console.log("Final Arr");
-        console.log(finalArr);
+        // console.log("Final Arr");
+        // console.log(finalArr);
         const response = {
             status:"success",
             message:"Gas Filter Success",

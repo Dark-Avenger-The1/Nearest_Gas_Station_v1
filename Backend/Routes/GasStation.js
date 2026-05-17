@@ -4,10 +4,8 @@ const express = require("express");
 const router = express.Router();
 const API = require("../../Helper/LocalAPI.js");
 
-console.log("API object:", API);
+
 router.post("/GasStation",async (req,res)=>{
-  console.log("✅ Route was hit!"); // ADD THIS
-  console.log("Body received:", req.body); // ADD THIS
   try{
     const rad = 5000;
     const query = `[out:json];node(around:${rad},${req.body.lat},${req.body.long})["amenity"="fuel"];out body;`;
